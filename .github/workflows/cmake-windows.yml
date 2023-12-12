@@ -1,0 +1,57 @@
+name: CMake-Windows
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BUILD_TYPE: Release
+  SCCACHE_GHA_ENABLED: "true"
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update Git Submodules
+        run: git submodule update --init --recursive
+
+      - name: Enable Developer Command Prompt
+        uses: ilammy/msvc-dev-cmd@v1.12.1
+
+      - name: Update Ccache and Ninja # Needed for ccache/Ninja bug found in pre-installed version
+        shell: bash
+        run: |
+          choco install ccache
+          echo "=============="
+          ccache --version
+          echo "=============="
+          choco install ninja
+          echo "=============="
+          ninja --version
+
+      - name: Ccache Setup
+        uses: hendrikmuhs/ccache-action@v1.2.9
+        with:
+          key: win-${{env.BUILD_TYPE}}
+          variant: ccache
+
+      - name: Configure CMake
+        run: cmake rpg -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_EDITOR=OFF -G Ninja -DCMAKE_CXX_COMPILER=cl -DCMAKE_C_COMPILER=cl -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 4
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{env.BUILD_TYPE}}
+          path: |
+            build/**/*.exe
+            build/**/EditorResources
+            build/**/EngineResources
+            build/**/GameResources
+            !build/**/CMakeFiles

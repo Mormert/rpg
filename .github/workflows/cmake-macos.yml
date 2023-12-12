@@ -1,0 +1,41 @@
+name: CMake-MacOS
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update Git Submodules
+        run: git submodule update --init --recursive
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: osx-${{env.BUILD_TYPE}}
+
+      - name: Configure CMake
+        run: cmake rpg -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DBUILD_EDITOR=OFF -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -j 6
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{env.BUILD_TYPE}}
+          path: |
+            build/**/*.exe
+            build/**/EditorResources
+            build/**/EngineResources
+            build/**/GameResources
+            !build/**/CMakeFiles
