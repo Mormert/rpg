@@ -1,10 +1,11 @@
 // Copyright (c) 2023. Johan Lind
 
-#include "rpgGame.h"
 #include "jleKickStarter.h"
+#include "rpgGame.h"
 
 int
-main() {
+main()
+{
     kickStart<rpgGame>();
     return 0;
 }

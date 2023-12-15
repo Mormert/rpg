@@ -17,6 +17,8 @@ project(${JLE_GAME_BUILD})
 add_executable(${JLE_GAME_BUILD}
         "rpgGame.cpp"
         "rpgWorld.cpp"
+        "cTerrain.cpp"
+        "rpgMaterialFlatNoise.cpp"
         "main.cpp")
 
 include(${JLE_ENGINE_PATH}/cmake/game2.cmake)

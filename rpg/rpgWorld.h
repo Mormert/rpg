@@ -8,13 +8,13 @@
 
 using rpgWorldGrid = std::array<std::array<rpgWorldSquare, 100>, 100>;
 
-class rpgWorld {
+class rpgWorld
+{
 public:
     rpgWorld();
 
-    rpgWorldGrid& getGrid();
+    rpgWorldGrid &getGrid();
 
 private:
     rpgWorldGrid _grid;
 };
-

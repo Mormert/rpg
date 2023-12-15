@@ -2,13 +2,23 @@
 
 #include "rpgGame.h"
 
+rpgGame::rpgGame() { gRpgGame = this; }
+
 void
-rpgGame::start() {
+rpgGame::start()
+{
+    loadScene(jlePath{"GR:/scenes/main.scn"});
 }
 
 void
-rpgGame::update(float dt) {
+rpgGame::update(float dt)
+{
 }
 
-rpgGame::~rpgGame() {
+rpgGame::~rpgGame() {}
+
+rpgWorld &
+rpgGame::getWorld()
+{
+    return _world;
 }
