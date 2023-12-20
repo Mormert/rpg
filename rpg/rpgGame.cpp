@@ -7,7 +7,6 @@ rpgGame::rpgGame() { gRpgGame = this; }
 void
 rpgGame::start()
 {
-    loadScene(jlePath{"GR:/scenes/main.scn"});
 }
 
 void

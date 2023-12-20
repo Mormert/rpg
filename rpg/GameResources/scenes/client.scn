@@ -1,0 +1,15 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "jleSceneClient",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "value0": {
+                    "sceneName": "client",
+                    "_sceneObjects": []
+                }
+            }
+        }
+    }
+}
