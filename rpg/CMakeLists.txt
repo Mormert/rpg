@@ -15,10 +15,11 @@ include(${JLE_ENGINE_PATH}/cmake/game1.cmake)
 project(${JLE_GAME_BUILD})
 
 add_executable(${JLE_GAME_BUILD}
+        "main.cpp"
         "rpgGame.cpp"
         "rpgWorld.cpp"
         "cTerrain.cpp"
         "rpgMaterialFlatNoise.cpp"
-        "main.cpp")
+        "cRpgPlayer.cpp")
 
 include(${JLE_ENGINE_PATH}/cmake/game2.cmake)
