@@ -11,10 +11,13 @@ public:
     explicit cRpgPlayer(jleObject *owner = nullptr, jleScene *scene = nullptr);
 
     template <class Archive>
-    void serialize(Archive &ar)
+    void
+    serialize(Archive &archive)
     {
-        ar(CEREAL_NVP(_color));
+        archive(CEREAL_NVP(_color));
     }
+
+    NET_SYNC(_color, _someInt)
 
     void start() override;
 
@@ -24,8 +27,8 @@ public:
 
 protected:
     glm::vec3 _color{1.f};
+    int _someInt{3};
 };
-
 
 CEREAL_REGISTER_TYPE(cRpgPlayer)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(jleComponent, cRpgPlayer)

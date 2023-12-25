@@ -31,8 +31,28 @@ struct rpgPlayerNetworkEvent : public jleNetworkEvent {
     }
 };
 
-CEREAL_REGISTER_TYPE(rpgPlayerNetworkEvent)
-CEREAL_REGISTER_POLYMORPHIC_RELATION(jleNetworkEvent, rpgPlayerNetworkEvent)
+JLE_REGISTER_NET_EVENT(rpgPlayerNetworkEvent)
+
+struct rpgPlayerNetworkEvent2 : public jleNetworkEvent {
+
+    template <class Archive>
+    void
+    serialize(Archive &archive)
+    {
+        archive(CEREAL_NVP(someThing), CEREAL_NVP(entityId));
+    }
+
+    glm::vec3 someThing{};
+    int64_t entityId{};
+
+    void
+    onReceiveFromClient(int32_t senderId) override
+    {
+        LOGI << "Received event2 with entity id: " << entityId << " from sender: " << senderId;
+    }
+};
+
+JLE_REGISTER_NET_EVENT(rpgPlayerNetworkEvent2)
 
 cRpgPlayer::cRpgPlayer(jleObject *owner, jleScene *scene) : jleComponent(owner, scene) {}
 
@@ -46,6 +66,15 @@ cRpgPlayer::update(float dt)
 {
     if (gEngine->input().keyboard->keyPressed(jleKey::T)) {
         auto event = jleMakeNetEvent<rpgPlayerNetworkEvent>();
+        event->someThing = glm::vec3{5.f};
+        event->entityId = object()->netEntityID();
+        auto *scn = dynamic_cast<jleSceneClient *>(scene());
+        if (scn) {
+            scn->sendNetworkEvent(std::move(event));
+        }
+    }
+    if (gEngine->input().keyboard->keyPressed(jleKey::R)) {
+        auto event = jleMakeNetEvent<rpgPlayerNetworkEvent2>();
         event->someThing = glm::vec3{5.f};
         event->entityId = object()->netEntityID();
         auto *scn = dynamic_cast<jleSceneClient *>(scene());
