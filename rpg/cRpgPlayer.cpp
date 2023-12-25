@@ -12,7 +12,7 @@
 #include "jleNetworkEvent.h"
 #include "jleSceneClient.h"
 
-struct rpgPlayerNetworkEvent : public jleNetworkEvent {
+struct rpgPlayerNetworkEvent : public jleClientToServerEvent {
 
     template <class Archive>
     void
@@ -25,15 +25,15 @@ struct rpgPlayerNetworkEvent : public jleNetworkEvent {
     int64_t entityId{};
 
     void
-    onReceiveFromClient(int32_t senderId) override
+    execute() override
     {
-        LOGI << "Received event with entity id: " << entityId << " from sender: " << senderId;
+        LOGI << "Received event with entity id: " << entityId;
     }
 };
 
 JLE_REGISTER_NET_EVENT(rpgPlayerNetworkEvent)
 
-struct rpgPlayerNetworkEvent2 : public jleNetworkEvent {
+struct rpgPlayerNetworkEvent2 : public jleClientToServerEvent {
 
     template <class Archive>
     void
@@ -46,9 +46,9 @@ struct rpgPlayerNetworkEvent2 : public jleNetworkEvent {
     int64_t entityId{};
 
     void
-    onReceiveFromClient(int32_t senderId) override
+    execute() override
     {
-        LOGI << "Received event2 with entity id: " << entityId << " from sender: " << senderId;
+        LOGI << "Received event2 with entity id: " << entityId;
     }
 };
 
