@@ -69,7 +69,7 @@ cRpgPlayer::update(float dt)
         {
             auto event = jleMakeNetEvent<rpgPlayerNetworkEvent>();
             event->someThing = glm::vec3{5.f};
-            event->entityId = object()->netEntityID();
+            event->entityId = object()->netID();
             auto *scn = dynamic_cast<jleSceneClient *>(scene());
             if (scn) {
                 scn->sendNetworkEvent(std::move(event));
@@ -80,7 +80,7 @@ cRpgPlayer::update(float dt)
     if (gEngine->input().keyboard->keyPressed(jleKey::R)) {
         auto event = jleMakeNetEvent<rpgPlayerNetworkEvent2>();
         event->someThing = glm::vec3{5.f};
-        event->entityId = object()->netEntityID();
+        event->entityId = object()->netID();
         auto *scn = dynamic_cast<jleSceneClient *>(scene());
         if (scn) {
             scn->sendNetworkEvent(std::move(event));
