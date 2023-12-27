@@ -27,7 +27,7 @@ struct rpgPlayerNetworkEvent : public jleClientToServerEvent {
     void
     execute() override
     {
-        LOGI << "Received event with entity id: " << entityId;
+        //LOGI << "Received event with entity id: " << entityId;
     }
 };
 
@@ -48,7 +48,7 @@ struct rpgPlayerNetworkEvent2 : public jleClientToServerEvent {
     void
     execute() override
     {
-        LOGI << "Received event2 with entity id: " << entityId;
+        //LOGI << "Received event2 with entity id: " << entityId;
     }
 };
 
@@ -65,13 +65,17 @@ void
 cRpgPlayer::update(float dt)
 {
     if (gEngine->input().keyboard->keyPressed(jleKey::T)) {
-        auto event = jleMakeNetEvent<rpgPlayerNetworkEvent>();
-        event->someThing = glm::vec3{5.f};
-        event->entityId = object()->netEntityID();
-        auto *scn = dynamic_cast<jleSceneClient *>(scene());
-        if (scn) {
-            scn->sendNetworkEvent(std::move(event));
+        for(int i = 0; i < 100000 ; i++)
+        {
+            auto event = jleMakeNetEvent<rpgPlayerNetworkEvent>();
+            event->someThing = glm::vec3{5.f};
+            event->entityId = object()->netEntityID();
+            auto *scn = dynamic_cast<jleSceneClient *>(scene());
+            if (scn) {
+                scn->sendNetworkEvent(std::move(event));
+            }
         }
+
     }
     if (gEngine->input().keyboard->keyPressed(jleKey::R)) {
         auto event = jleMakeNetEvent<rpgPlayerNetworkEvent2>();
@@ -87,5 +91,5 @@ cRpgPlayer::update(float dt)
 void
 cRpgPlayer::serverUpdate(float dt)
 {
-    int a = 3;
+    syncServerToClient();
 }
