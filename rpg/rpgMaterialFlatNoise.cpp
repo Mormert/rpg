@@ -1,4 +1,6 @@
-// Copyright (c) 2023. Johan Lind
+/*********************************************************************************************
+ *               Copyright (c) 2023-2024 Johan Lind. All rights reserved.                    *
+ *********************************************************************************************/
 
 #include "rpgMaterialFlatNoise.h"
 
@@ -28,8 +30,7 @@ rpgMaterialFlatNoise::useMaterial(const jleCamera &camera,
 
     auto &shader = *_shaderRef.get();
 
-    if(!_colors.empty())
-    {
+    if (!_colors.empty()) {
         std::vector<glm::vec3> c;
         c.reserve(_colors.size());
 

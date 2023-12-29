@@ -1,11 +1,12 @@
-// Copyright (c) 2023. Johan Lind
+/*********************************************************************************************
+ *               Copyright (c) 2023-2024 Johan Lind. All rights reserved.                    *
+ *********************************************************************************************/
 
 #pragma once
 
 #include "jleMaterial.h"
 
-struct rpgMaterialFlatNoiseColorThreshold
-{
+struct rpgMaterialFlatNoiseColorThreshold {
     jleRGB color = jleRGB{1.f};
     float threshold{};
 
@@ -14,7 +15,6 @@ struct rpgMaterialFlatNoiseColorThreshold
 };
 
 JLE_EXTERN_TEMPLATE_CEREAL_H(rpgMaterialFlatNoiseColorThreshold)
-
 
 class rpgMaterialFlatNoise : public jleMaterial
 {
@@ -37,7 +37,6 @@ private:
 };
 
 JLE_EXTERN_TEMPLATE_CEREAL_H(rpgMaterialFlatNoise)
-
 
 CEREAL_REGISTER_TYPE(rpgMaterialFlatNoise)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(jleMaterial, rpgMaterialFlatNoise)

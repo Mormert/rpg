@@ -1,4 +1,6 @@
-// Copyright (c) 2023. Johan Lind
+/*********************************************************************************************
+ *               Copyright (c) 2023-2024 Johan Lind. All rights reserved.                    *
+ *********************************************************************************************/
 
 #include "cRpgPlayer.h"
 
@@ -27,7 +29,7 @@ struct rpgPlayerNetworkEvent : public jleClientToServerEvent {
     void
     execute() override
     {
-        //LOGI << "Received event with entity id: " << entityId;
+        // LOGI << "Received event with entity id: " << entityId;
     }
 };
 
@@ -48,7 +50,7 @@ struct rpgPlayerNetworkEvent2 : public jleClientToServerEvent {
     void
     execute() override
     {
-        //LOGI << "Received event2 with entity id: " << entityId;
+        // LOGI << "Received event2 with entity id: " << entityId;
     }
 };
 
@@ -65,8 +67,7 @@ void
 cRpgPlayer::update(float dt)
 {
     if (gEngine->input().keyboard->keyPressed(jleKey::T)) {
-        for(int i = 0; i < 100000 ; i++)
-        {
+        for (int i = 0; i < 100000; i++) {
             auto event = jleMakeNetEvent<rpgPlayerNetworkEvent>();
             event->someThing = glm::vec3{5.f};
             event->entityId = object()->netID();
@@ -75,7 +76,6 @@ cRpgPlayer::update(float dt)
                 scn->sendNetworkEvent(std::move(event));
             }
         }
-
     }
     if (gEngine->input().keyboard->keyPressed(jleKey::R)) {
         auto event = jleMakeNetEvent<rpgPlayerNetworkEvent2>();
