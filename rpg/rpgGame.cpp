@@ -17,9 +17,3 @@ rpgGame::update(float dt)
 }
 
 rpgGame::~rpgGame() {}
-
-rpgWorld &
-rpgGame::getWorld()
-{
-    return _world;
-}

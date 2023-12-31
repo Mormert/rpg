@@ -50,10 +50,6 @@ cTerrain::registerLua(sol::state &lua, sol::table &table)
 void
 cTerrain::generateTerrainFromWorld()
 {
-    if (gRpgGame) {
-        auto &world = gRpgGame->getWorld();
-        auto &grid = world.getGrid();
-
         _terrainMesh = std::make_shared<jleMesh>();
 
         std::vector<glm::vec3> positions;
@@ -66,13 +62,12 @@ cTerrain::generateTerrainFromWorld()
         generateTerrain(positions, normals, texCoords, tangents, bitangents, indices);
 
         _terrainMesh->makeMesh(positions, normals, texCoords, tangents, bitangents, indices);
-    }
 }
 
 void
 cTerrain::editorInspectorImGuiRender()
 {
-#ifdef BUILD_EDITOR
+#ifdef JLE_BUILD_EDITOR
     if (ImGui::Button("Generate Terrain from World")) {
         generateTerrainFromWorld();
     }

@@ -5,8 +5,6 @@
 #pragma once
 
 #include "jleGame.h"
-#include "jleMesh.h"
-#include "rpgWorld.h"
 
 class rpgGame;
 
@@ -22,9 +20,5 @@ public:
     void start() override;
 
     void update(float dt) override;
-
-    rpgWorld &getWorld();
-
 private:
-    rpgWorld _world;
 };

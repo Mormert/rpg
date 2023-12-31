@@ -19,7 +19,6 @@ project(${JLE_GAME_BUILD})
 add_executable(${JLE_GAME_BUILD}
         "main.cpp"
         "rpgGame.cpp"
-        "rpgWorld.cpp"
         "cTerrain.cpp"
         "rpgMaterialFlatNoise.cpp"
         "cRpgPlayer.cpp")
