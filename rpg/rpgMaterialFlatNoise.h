@@ -5,6 +5,9 @@
 #pragma once
 
 #include "jleMaterial.h"
+#include "jleRGB.h"
+
+#include <cereal/types/vector.hpp>
 
 struct rpgMaterialFlatNoiseColorThreshold {
     jleRGB color = jleRGB{1.f};

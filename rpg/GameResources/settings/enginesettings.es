@@ -17,10 +17,7 @@
                     "isCappedFps": false
                 },
                 "enableNetworking": true,
-                "initialScenesToLoad": [
-                    "GR:/scenes/server.scn",
-                    "GR:/scenes/client.scn"
-                ]
+                "initialScenesToLoad": []
             }
         }
     }
