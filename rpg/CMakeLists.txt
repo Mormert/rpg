@@ -21,6 +21,8 @@ add_executable(${JLE_GAME_BUILD}
         "rpgGame.cpp"
         "cTerrain.cpp"
         "rpgMaterialFlatNoise.cpp"
-        "cRpgPlayer.cpp")
+        "cRpgPlayer.cpp"
+        "cRpgPlayerCamera.cpp"
+        "rpgSceneServer.cpp")
 
 include(${JLE_ENGINE_PATH}/cmake/game2.cmake)

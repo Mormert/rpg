@@ -37,7 +37,7 @@ public:
 
     void editorInspectorImGuiRender() override;
 
-    void generateTerrainFromWorld();
+    void generateTerrain();
 
 private:
     std::shared_ptr<jleMesh> _terrainMesh;
@@ -45,12 +45,17 @@ private:
     jleResourceRef<jleMaterial> _terrainTreeMaterialRef;
     jleResourceRef<jleMesh> _treeMeshRef;
 
-    void generateTerrain(std::vector<glm::vec3> &positions,
+    void generateTerrainMesh(std::vector<glm::vec3> &positions,
                          std::vector<glm::vec3> &normals,
                          std::vector<glm::vec2> &texCoords,
                          std::vector<glm::vec3> &tangents,
                          std::vector<glm::vec3> &bitangents,
                          std::vector<unsigned int> &indices);
+
+    void generateTerrainHeights();
+
+    constexpr static size_t _gridSize = 100;
+    std::array<std::array<int, _gridSize>, _gridSize> _terrainHeights{};
 };
 
 JLE_EXTERN_TEMPLATE_CEREAL_H(cTerrain)

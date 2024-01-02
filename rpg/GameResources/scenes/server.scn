@@ -1,7 +1,7 @@
 {
     "value0": {
         "polymorphic_id": 2147483649,
-        "polymorphic_name": "jleSceneServer",
+        "polymorphic_name": "rpgSceneServer",
         "ptr_wrapper": {
             "id": 2147483649,
             "data": {
@@ -16,7 +16,7 @@
                                     "__templatePath": {
                                         "nullopt": true
                                     },
-                                    "_instanceName": "rpgPlayerTest",
+                                    "_instanceName": "terrain",
                                     "_transform": {
                                         "_local": {
                                             "value0": {
@@ -49,15 +49,13 @@
                                     "_components": [
                                         {
                                             "polymorphic_id": 2147483650,
-                                            "polymorphic_name": "cRpgPlayer",
+                                            "polymorphic_name": "cTerrain",
                                             "ptr_wrapper": {
                                                 "id": 2147483651,
                                                 "data": {
-                                                    "_color": {
-                                                        "x": 1.0,
-                                                        "y": 1.0,
-                                                        "z": 1.0
-                                                    }
+                                                    "_terrainMaterialRef": "GR:/materials/flatNoiseTest.mat",
+                                                    "_treeMeshRef": "GR:/models/tree.fbx",
+                                                    "_terrainTreeMaterialRef": "GR:/materials/tree.mat"
                                                 }
                                             }
                                         }

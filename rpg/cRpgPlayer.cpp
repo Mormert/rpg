@@ -4,15 +4,16 @@
 
 #include "cRpgPlayer.h"
 
+#include "cRpgPlayerCamera.h"
 #include "editor/jleImGuiCerealArchive.h"
-#include <cereal/archives/binary.hpp>
-#include <cereal/archives/json.hpp>
 
 #include "jleGameEngine.h"
 #include "jleInput.h"
 #include "jleKeyboardInput.h"
 #include "jleNetworkEvent.h"
 #include "jleSceneClient.h"
+
+#include <cCamera.h>
 
 struct rpgPlayerNetworkEvent : public jleClientToServerEvent {
 
@@ -56,23 +57,42 @@ struct rpgPlayerNetworkEvent2 : public jleClientToServerEvent {
 
 JLE_REGISTER_NET_EVENT(rpgPlayerNetworkEvent2)
 
-cRpgPlayer::cRpgPlayer(jleObject *owner, jleScene *scene) : jleComponent(owner, scene) {}
+cRpgPlayer::
+cRpgPlayer(jleObject *owner, jleScene *scene)
+    : jleComponent(owner, scene)
+{
+}
 
 void
 cRpgPlayer::start()
 {
+    if (const auto *client = sceneClient()) {
+        const auto clientId = client->clientId();
+        const auto ownerId = object()->netOwnerID();
+        if (clientId == ownerId) {
+            startLocalPlayer();
+        }
+    }
+}
+
+void
+cRpgPlayer::startLocalPlayer()
+{
+    auto cameraObject = scene()->spawnObjectWithName("playerCamera");
+    cameraObject->addComponent<cCamera>();
+    auto playerCamComp = cameraObject->addComponent<cRpgPlayerCamera>();
+    playerCamComp->setTarget(getObjectSharedPtr());
 }
 
 void
 cRpgPlayer::update(float dt)
 {
     if (gEngine->input().keyboard->keyPressed(jleKey::T)) {
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 10; i++) {
             auto event = jleMakeNetEvent<rpgPlayerNetworkEvent>();
             event->someThing = glm::vec3{5.f};
             event->entityId = object()->netID();
-            auto *scn = dynamic_cast<jleSceneClient *>(scene());
-            if (scn) {
+            if (auto *scn = sceneClient()) {
                 scn->sendNetworkEvent(std::move(event));
             }
         }
@@ -91,5 +111,5 @@ cRpgPlayer::update(float dt)
 void
 cRpgPlayer::serverUpdate(float dt)
 {
-    syncServerToClient();
+    // syncServerToClient();
 }

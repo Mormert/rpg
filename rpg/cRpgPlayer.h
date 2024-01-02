@@ -23,9 +23,12 @@ public:
 
     void start() override;
 
+    void startLocalPlayer();
+
     void update(float dt) override;
 
     void serverUpdate(float dt) override;
+
 
 protected:
     glm::vec3 _color{1.f};
