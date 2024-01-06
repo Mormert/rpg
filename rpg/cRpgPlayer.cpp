@@ -70,6 +70,7 @@ cRpgPlayer::start()
         const auto clientId = client->clientId();
         const auto ownerId = object()->netOwnerID();
         if (clientId == ownerId) {
+            _localPlayer = true;
             startLocalPlayer();
         }
     }
@@ -79,13 +80,20 @@ void
 cRpgPlayer::startLocalPlayer()
 {
     auto cameraObject = scene()->spawnObjectWithName("playerCamera");
-    cameraObject->addComponent<cCamera>();
     auto playerCamComp = cameraObject->addComponent<cRpgPlayerCamera>();
     playerCamComp->setTarget(getObjectSharedPtr());
 }
 
 void
 cRpgPlayer::update(float dt)
+{
+    if(_localPlayer) {
+        playerInput();
+    }
+}
+
+void
+cRpgPlayer::playerInput()
 {
     if (gEngine->input().keyboard->keyPressed(jleKey::T)) {
         for (int i = 0; i < 10; i++) {

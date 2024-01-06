@@ -27,12 +27,16 @@ public:
 
     void update(float dt) override;
 
+    void playerInput();
+
     void serverUpdate(float dt) override;
 
 
 protected:
     glm::vec3 _color{1.f};
     int _someInt{3};
+
+    bool _localPlayer = false;
 };
 
 CEREAL_REGISTER_TYPE(cRpgPlayer)

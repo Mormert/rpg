@@ -6,23 +6,36 @@
 
 #include <jleComponent.h>
 
+class cCamera;
+
 class cRpgPlayerCamera : public jleComponent
 {
     JLE_REGISTER_COMPONENT_TYPE(cRpgPlayerCamera)
 public:
-
     explicit cRpgPlayerCamera(jleObject *owner = nullptr, jleScene *scene = nullptr);
-
 
     void update(float dt) override;
 
     void setTarget(std::weak_ptr<jleObject> target);
 
+    void start() override;
+
 private:
+    void processInput(float dt);
+
+    void rotateCameraTowardsTarget();
+
+    glm::vec3 getTargetPosition();
 
     std::weak_ptr<jleObject> _target;
-};
+    glm::vec3 _targetOffset{};
 
+    std::weak_ptr<cCamera> _cameraComponent;
+
+    float _radialDistance{20.f};
+    float _pitch{};
+    float _yaw{};
+};
 
 CEREAL_REGISTER_TYPE(cRpgPlayerCamera)
 CEREAL_REGISTER_POLYMORPHIC_RELATION(jleComponent, cRpgPlayerCamera)
