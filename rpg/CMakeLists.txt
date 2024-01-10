@@ -21,6 +21,7 @@ add_executable(${JLE_GAME_BUILD}
         "rpgGame.cpp"
         "cTerrain.cpp"
         "rpgMaterialFlatNoise.cpp"
+        "rpgMaterialFlatNoiseTexture.cpp"
         "cRpgPlayer.cpp"
         "cRpgPlayerCamera.cpp"
         "rpgSceneServer.cpp")

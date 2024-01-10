@@ -1,0 +1,68 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "jleScene",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "sceneName": "obj_templates",
+                "_sceneObjects": [
+                    {
+                        "polymorphic_id": 1073741824,
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "__templatePath": {
+                                    "nullopt": true
+                                },
+                                "_instanceName": "player_gfx",
+                                "_transform": {
+                                    "_local": {
+                                        "value0": {
+                                            "x": 0.4999953508377075,
+                                            "y": 0.0,
+                                            "z": 0.0,
+                                            "w": 0.0
+                                        },
+                                        "value1": {
+                                            "x": 0.0,
+                                            "y": 1.99998140335083,
+                                            "z": 0.0,
+                                            "w": 0.0
+                                        },
+                                        "value2": {
+                                            "x": 0.0,
+                                            "y": 0.0,
+                                            "z": 0.49999722838401797,
+                                            "w": 0.0
+                                        },
+                                        "value3": {
+                                            "x": 0.0,
+                                            "y": 0.0,
+                                            "z": 0.0,
+                                            "w": 1.0
+                                        }
+                                    }
+                                },
+                                "__childObjects": [],
+                                "_components": [
+                                    {
+                                        "polymorphic_id": 2147483650,
+                                        "polymorphic_name": "cMesh",
+                                        "ptr_wrapper": {
+                                            "id": 2147483651,
+                                            "data": {
+                                                "_meshRef": "ER:/models/cube.fbx",
+                                                "_materialRef": "GR:/materials/tree.mat"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

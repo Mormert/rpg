@@ -40,7 +40,6 @@ public:
     void generateTerrain();
 
 private:
-    std::shared_ptr<jleMesh> _terrainMesh;
     jleResourceRef<jleMaterial> _terrainMaterialRef;
     jleResourceRef<jleMaterial> _terrainTreeMaterialRef;
     jleResourceRef<jleMesh> _treeMeshRef;

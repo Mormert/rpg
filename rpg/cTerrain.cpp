@@ -28,12 +28,6 @@ cTerrain::start()
 void
 cTerrain::update(float dt)
 {
-    if (_terrainMesh) {
-        std::shared_ptr<jleMaterial> material = _terrainMaterialRef.get();
-
-        gEngine->renderGraph().sendMesh(
-            _terrainMesh, material, getTransform().getWorldMatrix(), object()->instanceID(), false);
-    }
 }
 
 void
@@ -56,7 +50,7 @@ cTerrain::generateTerrain()
 {
     generateTerrainHeights();
 
-    _terrainMesh = std::make_shared<jleMesh>();
+    auto terrainMesh = std::make_shared<jleMesh>();
 
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
@@ -67,7 +61,13 @@ cTerrain::generateTerrain()
 
     generateTerrainMesh(positions, normals, texCoords, tangents, bitangents, indices);
 
-    _terrainMesh->makeMesh(positions, normals, texCoords, tangents, bitangents, indices);
+    terrainMesh->makeMesh(positions, normals, texCoords, tangents, bitangents, indices);
+
+    const auto meshRef = gEngine->resources().storeResource<jleMesh>(terrainMesh, {"RM:/terrainMesh.mesh"});
+
+    const auto meshComp = object()->addComponent<cMesh>();
+    meshComp->getMeshRef() = meshRef;
+    meshComp->getMaterialRef() = _terrainMaterialRef;
 }
 
 void

@@ -79,7 +79,7 @@ cRpgPlayerCamera::processInput(float dt)
 
     glm::mat4 mat{1.f};
     mat = glm::translate(mat, forward);
-    mat = glm::translate(mat, _targetOffset);
+    mat = glm::translate(mat, getTargetPosition());
 
     getTransform().setLocalMatrix(mat);
 }
@@ -103,7 +103,7 @@ cRpgPlayerCamera::rotateCameraTowardsTarget()
 }
 
 glm::vec3
-cRpgPlayerCamera::getTargetPosition()
+cRpgPlayerCamera::getTargetPosition() const
 {
     if (auto target = _target.lock()) {
         return target->getTransform().getWorldPosition() + _targetOffset;

@@ -1,0 +1,57 @@
+{
+    "value0": {
+        "polymorphic_id": 2147483649,
+        "polymorphic_name": "jleObject",
+        "ptr_wrapper": {
+            "id": 2147483649,
+            "data": {
+                "__templatePath": {
+                    "nullopt": true
+                },
+                "_instanceName": "player_gfx",
+                "_transform": {
+                    "_local": {
+                        "value0": {
+                            "x": 0.9996815323829651,
+                            "y": 0.0,
+                            "z": 0.0,
+                            "w": 0.0
+                        },
+                        "value1": {
+                            "x": 0.0,
+                            "y": -4.371138828673793e-8,
+                            "z": 1.0,
+                            "w": 0.0
+                        },
+                        "value2": {
+                            "x": 0.0,
+                            "y": -1.0,
+                            "z": -4.371138828673793e-8,
+                            "w": 0.0
+                        },
+                        "value3": {
+                            "x": 0.0,
+                            "y": 1.0,
+                            "z": 0.0,
+                            "w": 1.0
+                        }
+                    }
+                },
+                "__childObjects": [],
+                "_components": [
+                    {
+                        "polymorphic_id": 2147483650,
+                        "polymorphic_name": "cMesh",
+                        "ptr_wrapper": {
+                            "id": 2147483650,
+                            "data": {
+                                "_meshRef": "GR:/models/player_warrior.fbx",
+                                "_materialRef": "GR:/materials/player.mat"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

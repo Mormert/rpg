@@ -14,48 +14,43 @@
 #include "jleSceneClient.h"
 
 #include <cCamera.h>
+#include <jleSceneServer.h>
 
-struct rpgPlayerNetworkEvent : public jleClientToServerEvent {
-
-    template <class Archive>
-    void
-    serialize(Archive &archive)
-    {
-        archive(CEREAL_NVP(someThing), CEREAL_NVP(entityId));
-    }
-
-    glm::vec3 someThing{};
-    int64_t entityId{};
-
-    void
-    execute() override
-    {
-        // LOGI << "Received event with entity id: " << entityId;
-    }
-};
-
-JLE_REGISTER_NET_EVENT(rpgPlayerNetworkEvent)
-
-struct rpgPlayerNetworkEvent2 : public jleClientToServerEvent {
+struct rpgPlayerMovementEvent : public jleClientToServerEvent {
 
     template <class Archive>
     void
     serialize(Archive &archive)
     {
-        archive(CEREAL_NVP(someThing), CEREAL_NVP(entityId));
+        archive(CEREAL_NVP(objectNetId), CEREAL_NVP(movementCode));
     }
 
-    glm::vec3 someThing{};
-    int64_t entityId{};
+    int32_t objectNetId{};
+    uint8_t movementCode{};
 
     void
     execute() override
     {
-        // LOGI << "Received event2 with entity id: " << entityId;
+        const auto dt = gEngine->deltaFrameTime();
+
+        if (auto object = getSceneServer().getObjectFromNetId(objectNetId)) {
+            if (movementCode == static_cast<char>(jleKey::W)) {
+                object->getTransform().addLocalTranslation(object->getTransform().getForward() * dt);
+            }
+            if (movementCode == static_cast<char>(jleKey::S)) {
+                object->getTransform().addLocalTranslation(-object->getTransform().getForward() * dt);
+            }
+            if (movementCode == static_cast<char>(jleKey::A)) {
+                object->getTransform().addLocalTranslation(object->getTransform().getRight() * dt);
+            }
+            if (movementCode == static_cast<char>(jleKey::D)) {
+                object->getTransform().addLocalTranslation(-object->getTransform().getRight() * dt);
+            }
+        }
     }
 };
 
-JLE_REGISTER_NET_EVENT(rpgPlayerNetworkEvent2)
+JLE_REGISTER_NET_EVENT(rpgPlayerMovementEvent)
 
 cRpgPlayer::
 cRpgPlayer(jleObject *owner, jleScene *scene)
@@ -87,7 +82,7 @@ cRpgPlayer::startLocalPlayer()
 void
 cRpgPlayer::update(float dt)
 {
-    if(_localPlayer) {
+    if (_localPlayer) {
         playerInput();
     }
 }
@@ -95,24 +90,29 @@ cRpgPlayer::update(float dt)
 void
 cRpgPlayer::playerInput()
 {
-    if (gEngine->input().keyboard->keyPressed(jleKey::T)) {
-        for (int i = 0; i < 10; i++) {
-            auto event = jleMakeNetEvent<rpgPlayerNetworkEvent>();
-            event->someThing = glm::vec3{5.f};
-            event->entityId = object()->netID();
-            if (auto *scn = sceneClient()) {
-                scn->sendNetworkEvent(std::move(event));
-            }
-        }
+    if (gEngine->input().keyboard->keyDown(jleKey::W)) {
+        auto event = jleMakeNetEvent<rpgPlayerMovementEvent>();
+        event->movementCode = static_cast<uint8_t>(jleKey::W);
+        event->objectNetId = object()->netID();
+        sceneClient()->sendNetworkEvent(std::move(event));
     }
-    if (gEngine->input().keyboard->keyPressed(jleKey::R)) {
-        auto event = jleMakeNetEvent<rpgPlayerNetworkEvent2>();
-        event->someThing = glm::vec3{5.f};
-        event->entityId = object()->netID();
-        auto *scn = dynamic_cast<jleSceneClient *>(scene());
-        if (scn) {
-            scn->sendNetworkEvent(std::move(event));
-        }
+    if (gEngine->input().keyboard->keyDown(jleKey::S)) {
+        auto event = jleMakeNetEvent<rpgPlayerMovementEvent>();
+        event->movementCode = static_cast<uint8_t>(jleKey::S);
+        event->objectNetId = object()->netID();
+        sceneClient()->sendNetworkEvent(std::move(event));
+    }
+    if (gEngine->input().keyboard->keyDown(jleKey::A)) {
+        auto event = jleMakeNetEvent<rpgPlayerMovementEvent>();
+        event->movementCode = static_cast<uint8_t>(jleKey::A);
+        event->objectNetId = object()->netID();
+        sceneClient()->sendNetworkEvent(std::move(event));
+    }
+    if (gEngine->input().keyboard->keyDown(jleKey::D)) {
+        auto event = jleMakeNetEvent<rpgPlayerMovementEvent>();
+        event->movementCode = static_cast<uint8_t>(jleKey::D);
+        event->objectNetId = object()->netID();
+        sceneClient()->sendNetworkEvent(std::move(event));
     }
 }
 

@@ -25,7 +25,7 @@ private:
 
     void rotateCameraTowardsTarget();
 
-    glm::vec3 getTargetPosition();
+    glm::vec3 getTargetPosition() const;
 
     std::weak_ptr<jleObject> _target;
     glm::vec3 _targetOffset{};
