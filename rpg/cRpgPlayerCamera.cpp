@@ -10,11 +10,6 @@
 #include <glm/gtx/quaternion.hpp>
 #include <utility>
 
-cRpgPlayerCamera::
-cRpgPlayerCamera(jleObject *owner, jleScene *scene)
-{
-}
-
 void
 cRpgPlayerCamera::update(float dt)
 {

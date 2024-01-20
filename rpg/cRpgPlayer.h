@@ -10,7 +10,6 @@ class cRpgPlayer : public jleComponent
 {
     JLE_REGISTER_COMPONENT_TYPE(cRpgPlayer)
 public:
-    explicit cRpgPlayer(jleObject *owner = nullptr, jleScene *scene = nullptr);
 
     template <class Archive>
     void

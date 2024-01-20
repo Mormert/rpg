@@ -12,8 +12,6 @@ class cRpgPlayerCamera : public jleComponent
 {
     JLE_REGISTER_COMPONENT_TYPE(cRpgPlayerCamera)
 public:
-    explicit cRpgPlayerCamera(jleObject *owner = nullptr, jleScene *scene = nullptr);
-
     void update(float dt) override;
 
     void setTarget(std::weak_ptr<jleObject> target);

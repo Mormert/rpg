@@ -52,12 +52,6 @@ struct rpgPlayerMovementEvent : public jleClientToServerEvent {
 
 JLE_REGISTER_NET_EVENT(rpgPlayerMovementEvent)
 
-cRpgPlayer::
-cRpgPlayer(jleObject *owner, jleScene *scene)
-    : jleComponent(owner, scene)
-{
-}
-
 void
 cRpgPlayer::start()
 {

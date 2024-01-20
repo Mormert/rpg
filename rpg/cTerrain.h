@@ -12,8 +12,6 @@ class cTerrain : public jleComponent
 {
     JLE_REGISTER_COMPONENT_TYPE(cTerrain)
 public:
-    explicit cTerrain(jleObject *owner = nullptr, jleScene *scene = nullptr);
-
     template <class Archive>
     void
     serialize(Archive &ar)

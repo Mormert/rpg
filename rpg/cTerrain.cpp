@@ -13,12 +13,6 @@
 
 JLE_EXTERN_TEMPLATE_CEREAL_CPP(cTerrain)
 
-cTerrain::
-cTerrain(jleObject *owner, jleScene *scene)
-    : jleComponent(owner, scene)
-{
-}
-
 void
 cTerrain::start()
 {
