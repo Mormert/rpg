@@ -24,6 +24,8 @@ add_executable(${JLE_GAME_BUILD}
         "rpgMaterialFlatNoiseTexture.cpp"
         "cRpgPlayer.cpp"
         "cRpgPlayerCamera.cpp"
-        "rpgSceneServer.cpp")
+        "rpgSceneServer.cpp"
+        "PidStuff/PIDController.cpp"
+        "PidStuff/cPIDControlPad.cpp")
 
 include(${JLE_ENGINE_PATH}/cmake/game2.cmake)

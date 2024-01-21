@@ -14,7 +14,7 @@
                     "iconPath": "ED:/jle_default_icon.png",
                     "isRezisable": true,
                     "shouldDisplayCursor": true,
-                    "isCappedFps": false
+                    "isCappedFps": true
                 },
                 "enableNetworking": true,
                 "initialScenesToLoad": []
