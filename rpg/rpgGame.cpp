@@ -9,9 +9,6 @@ rpgGame::rpgGame() { gRpgGame = this; }
 void
 rpgGame::start()
 {
-    loadScene(jlePath{"GR:/scenes/pid_tests.scn"});
-
-    /* // Temporarily removed to test PIDs instead ...
 #ifdef JLE_BUILD_HEADLESS
     loadScene(jlePath{"GR:/scenes/server.scn"});
 #else
@@ -20,7 +17,6 @@ rpgGame::start()
 #endif
     loadScene(jlePath{"GR:/scenes/client.scn"});
 #endif
-     */
 }
 
 void

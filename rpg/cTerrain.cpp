@@ -4,6 +4,7 @@
 
 #include "cTerrain.h"
 #include "cMesh.h"
+#include "cRigidbody.h"
 
 #include "editor/jleEditorGizmos.h"
 #include "jle3DRenderer.h"
@@ -62,6 +63,8 @@ cTerrain::generateTerrain()
     const auto meshComp = object()->addComponent<cMesh>();
     meshComp->getMeshRef() = meshRef;
     meshComp->getMaterialRef() = _terrainMaterialRef;
+
+    const auto rigidBody = object()->addComponent<cRigidbody>();
 }
 
 void

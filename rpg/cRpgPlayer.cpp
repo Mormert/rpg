@@ -7,50 +7,73 @@
 #include "cRpgPlayerCamera.h"
 #include "editor/jleImGuiCerealArchive.h"
 
+#include "cCamera.h"
+#include "jle3DGraph.h"
 #include "jleGameEngine.h"
 #include "jleInput.h"
 #include "jleKeyboardInput.h"
 #include "jleNetworkEvent.h"
+#include "jlePhysics.h"
 #include "jleSceneClient.h"
+#include "jleSceneServer.h"
 
-#include <cCamera.h>
-#include <jleSceneServer.h>
+#include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
+#include <LinearMath/btVector3.h>
 
-struct rpgPlayerMovementEvent : public jleClientToServerEvent {
+struct rpgPlayerMovementEventServerToClient : public jleServerToClientEvent {
 
     template <class Archive>
     void
     serialize(Archive &archive)
     {
-        archive(CEREAL_NVP(objectNetId), CEREAL_NVP(movementCode));
+        archive(CEREAL_NVP(objectNetId), CEREAL_NVP(currentPosition), CEREAL_NVP(moveToPosition));
     }
 
     int32_t objectNetId{};
-    uint8_t movementCode{};
+    glm::vec3 currentPosition{};
+    glm::vec3 moveToPosition{};
 
     void
     execute() override
     {
-        const auto dt = gEngine->deltaFrameTime();
-
-        if (auto object = getSceneServer().getObjectFromNetId(objectNetId)) {
-            if (movementCode == static_cast<char>(jleKey::W)) {
-                object->getTransform().addLocalTranslation(object->getTransform().getForward() * dt);
-            }
-            if (movementCode == static_cast<char>(jleKey::S)) {
-                object->getTransform().addLocalTranslation(-object->getTransform().getForward() * dt);
-            }
-            if (movementCode == static_cast<char>(jleKey::A)) {
-                object->getTransform().addLocalTranslation(object->getTransform().getRight() * dt);
-            }
-            if (movementCode == static_cast<char>(jleKey::D)) {
-                object->getTransform().addLocalTranslation(-object->getTransform().getRight() * dt);
-            }
+        if (auto object = getSceneClient().getObjectFromNetId(objectNetId)) {
+            auto player = object->getComponent<cRpgPlayer>();
+            player->_moveToPosition = moveToPosition;
+            player->getTransform().setWorldPosition(currentPosition);
         }
     }
 };
 
-JLE_REGISTER_NET_EVENT(rpgPlayerMovementEvent)
+struct rpgPlayerMovementEventClientToServer : public jleClientToServerEvent {
+
+    template <class Archive>
+    void
+    serialize(Archive &archive)
+    {
+        archive(CEREAL_NVP(objectNetId), CEREAL_NVP(moveToPosition));
+    }
+
+    int32_t objectNetId{};
+    glm::vec3 moveToPosition{};
+
+    void
+    execute() override
+    {
+        if (auto object = getSceneServer().getObjectFromNetId(objectNetId)) {
+            auto player = object->getComponent<cRpgPlayer>();
+            player->_moveToPosition = moveToPosition;
+
+            auto event = jleMakeNetEvent<rpgPlayerMovementEventServerToClient>();
+            event->moveToPosition = moveToPosition;
+            event->currentPosition = object->getTransform().getWorldPosition();
+            event->objectNetId = object->netID();
+            getSceneServer().sendNetworkEventBroadcast(std::move(event));
+        }
+    }
+};
+
+JLE_REGISTER_NET_EVENT(rpgPlayerMovementEventClientToServer)
+JLE_REGISTER_NET_EVENT(rpgPlayerMovementEventServerToClient)
 
 void
 cRpgPlayer::start()
@@ -79,39 +102,65 @@ cRpgPlayer::update(float dt)
     if (_localPlayer) {
         playerInput();
     }
+
+    moveTowardsPosition(dt);
+
+    auto positionRotateTowards = _moveToPosition;
+    positionRotateTowards.y = getTransform().getLocalPosition().y;
+    getTransform().rotateTowardsPoint(positionRotateTowards);
+
+    gEngine->renderGraph().sendLine(_moveToPosition + glm::vec3{0.f, 0.5f, 0.f},
+                                    _moveToPosition - glm::vec3{0.f, 0.5f, 0.f});
 }
 
 void
 cRpgPlayer::playerInput()
 {
-    if (gEngine->input().keyboard->keyDown(jleKey::W)) {
-        auto event = jleMakeNetEvent<rpgPlayerMovementEvent>();
-        event->movementCode = static_cast<uint8_t>(jleKey::W);
-        event->objectNetId = object()->netID();
-        sceneClient()->sendNetworkEvent(std::move(event));
-    }
-    if (gEngine->input().keyboard->keyDown(jleKey::S)) {
-        auto event = jleMakeNetEvent<rpgPlayerMovementEvent>();
-        event->movementCode = static_cast<uint8_t>(jleKey::S);
-        event->objectNetId = object()->netID();
-        sceneClient()->sendNetworkEvent(std::move(event));
-    }
-    if (gEngine->input().keyboard->keyDown(jleKey::A)) {
-        auto event = jleMakeNetEvent<rpgPlayerMovementEvent>();
-        event->movementCode = static_cast<uint8_t>(jleKey::A);
-        event->objectNetId = object()->netID();
-        sceneClient()->sendNetworkEvent(std::move(event));
-    }
-    if (gEngine->input().keyboard->keyDown(jleKey::D)) {
-        auto event = jleMakeNetEvent<rpgPlayerMovementEvent>();
-        event->movementCode = static_cast<uint8_t>(jleKey::D);
-        event->objectNetId = object()->netID();
-        sceneClient()->sendNetworkEvent(std::move(event));
-    }
 }
 
 void
 cRpgPlayer::serverUpdate(float dt)
 {
-    // syncServerToClient();
+    moveTowardsPosition(dt);
+}
+
+void
+cRpgPlayer::playerMoveTo(const glm::vec3 &position)
+{
+    auto event = jleMakeNetEvent<rpgPlayerMovementEventClientToServer>();
+    event->moveToPosition = position;
+    event->objectNetId = object()->netID();
+    sceneClient()->sendNetworkEvent(std::move(event));
+}
+
+void
+cRpgPlayer::moveTowardsPosition(float dt)
+{
+    auto currentPos = getTransform().getWorldPosition();
+    currentPos.y = 0.f;
+
+    auto moveTo = _moveToPosition;
+    moveTo.y = 0.f;
+
+    glm::vec3 diff = moveTo - currentPos;
+
+    if (glm::length(diff) > 0.1f) {
+        getTransform().setWorldPosition(currentPos + glm::normalize(diff) * dt * 5.f);
+    }
+
+    currentPos = getTransform().getWorldPosition();
+
+    btVector3 rayFrom = {currentPos.x, currentPos.y + 10.f, currentPos.z};
+    btVector3 rayTo = {currentPos.x, currentPos.y - 10.f, currentPos.z};
+
+    btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
+
+    gEngine->physics().dynamicsWorld().rayTest(rayFrom, rayTo, rayCallback);
+
+    if (rayCallback.hasHit()) {
+        glm::vec3 hitPos{
+            rayCallback.m_hitPointWorld.x(), rayCallback.m_hitPointWorld.y(), rayCallback.m_hitPointWorld.z()};
+        hitPos.y -= 1.5f;
+        getTransform().setWorldPosition(hitPos);
+    }
 }

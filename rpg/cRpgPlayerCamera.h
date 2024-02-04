@@ -21,9 +21,11 @@ public:
 private:
     void processInput(float dt);
 
+    void processTerrainRaycast();
+
     void rotateCameraTowardsTarget();
 
-    glm::vec3 getTargetPosition() const;
+    [[nodiscard]] const glm::vec3 getTargetPosition() const;
 
     std::weak_ptr<jleObject> _target;
     glm::vec3 _targetOffset{};

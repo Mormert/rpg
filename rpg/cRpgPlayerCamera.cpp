@@ -3,9 +3,15 @@
  *********************************************************************************************/
 
 #include "cRpgPlayerCamera.h"
+#include "cRpgPlayer.h"
+#include "cTerrain.h"
 
 #include <cCamera.h>
+#include <cRigidbody.h>
+#include <jleGame.h>
 #include <jleInput.h>
+#include <jlePhysics.h>
+#include <jleWindow.h>
 
 #include <glm/gtx/quaternion.hpp>
 #include <utility>
@@ -77,6 +83,8 @@ cRpgPlayerCamera::processInput(float dt)
     mat = glm::translate(mat, getTargetPosition());
 
     getTransform().setLocalMatrix(mat);
+
+    processTerrainRaycast();
 }
 
 void
@@ -97,11 +105,60 @@ cRpgPlayerCamera::rotateCameraTowardsTarget()
     }
 }
 
-glm::vec3
+const glm::vec3
 cRpgPlayerCamera::getTargetPosition() const
 {
     if (auto target = _target.lock()) {
         return target->getTransform().getWorldPosition() + _targetOffset;
     }
     return _targetOffset;
+}
+
+void
+cRpgPlayerCamera::processTerrainRaycast()
+{
+    if(gEngine->input().mouse->mouseClick(jleButton::BUTTON_LEFT)){
+
+        const float mouseX = gEngine->input().mouse->mouseX();
+        const float mouseY = gEngine->input().mouse->mouseY();
+
+        const float width = gEngine->mainScreenFramebuffer->width();
+        const float height = gEngine->mainScreenFramebuffer->height();
+
+        auto &game = ((jleGameEngine *)gEngine)->gameRef();
+
+        float mx = mouseX / (width  * 0.5f) - 1.0f;
+        float my = mouseY / (height * 0.5f) - 1.0f;
+
+        glm::mat4 invVP = glm::inverse(game.mainCamera.getProjectionViewMatrix());
+        glm::vec4 screenPos = glm::vec4(mx, -my, 1.0f, 1.0f);
+        glm::vec4 worldPos = invVP * screenPos;
+
+        glm::vec3 rayDirection = glm::normalize(glm::vec3(worldPos));
+
+        const auto cameraPosition = getTransform().getLocalPosition();
+
+        glm::vec3 rayEnd = cameraPosition + rayDirection * 100.f;
+
+        btVector3 rayFrom = {cameraPosition.x, cameraPosition.y, cameraPosition.z};
+        btVector3 rayTo = {rayEnd.x, rayEnd.y, rayEnd.z};
+
+        btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
+
+        gEngine->physics().dynamicsWorld().rayTest(rayFrom, rayTo, rayCallback);
+
+        gEngine->renderGraph().sendLine(cameraPosition, rayEnd);
+
+        if(rayCallback.hasHit()){
+            void* hitPointer = rayCallback.m_collisionObject->getUserPointer();
+            const auto rb = reinterpret_cast<cRigidbody*>(hitPointer);
+            if(auto terrain = rb->object()->getComponent<cTerrain>()){
+                glm::vec3 hitPos = {rayCallback.m_hitPointWorld.x(), rayCallback.m_hitPointWorld.y(),rayCallback.m_hitPointWorld.z()};
+                if(auto player = _target.lock()->getComponent<cRpgPlayer>()){
+                    player->playerMoveTo(hitPos);
+                }
+            }
+
+        }
+    }
 }
