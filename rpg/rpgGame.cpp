@@ -9,14 +9,13 @@ rpgGame::rpgGame() { gRpgGame = this; }
 void
 rpgGame::start()
 {
-#ifdef JLE_BUILD_HEADLESS
-    loadScene(jlePath{"GR:/scenes/server.scn"});
-#else
-#ifndef NDEBUG
-    loadScene(jlePath{"GR:/scenes/server.scn"});
-#endif
-    loadScene(jlePath{"GR:/scenes/client.scn"});
-#endif
+    JLE_EXEC_IF(RPG_BUILD_SERVER) { loadScene(jlePath{"GR:/scenes/server.scn"}); }
+    else JLE_EXEC_IF(RPG_BUILD_IN_PROC_SERVER)
+    {
+        loadScene(jlePath{"GR:/scenes/server.scn"});
+    }
+
+    JLE_EXEC_IF_NOT(RPG_BUILD_SERVER) { loadScene(jlePath{"GR:/scenes/client.scn"}); }
 }
 
 void

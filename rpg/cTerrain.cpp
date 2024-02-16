@@ -70,7 +70,7 @@ cTerrain::generateTerrain()
 void
 cTerrain::editorInspectorImGuiRender()
 {
-#ifdef JLE_BUILD_EDITOR
+#if JLE_BUILD_IMGUI
     if (ImGui::Button("Generate Terrain from World")) {
         generateTerrain();
     }
