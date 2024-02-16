@@ -9,3 +9,4 @@
 [![CMake-MacOS](https://github.com/Mormert/rpg/actions/workflows/cmake-macos.yml/badge.svg)](https://github.com/Mormert/rpg/actions/workflows/cmake-macos.yml)
 [![CMake-Wasm](https://github.com/Mormert/rpg/actions/workflows/cmake-wasm.yml/badge.svg)](https://github.com/Mormert/rpg/actions/workflows/cmake-wasm.yml)
 [![CMake-Windows](https://github.com/Mormert/rpg/actions/workflows/cmake-windows.yml/badge.svg)](https://github.com/Mormert/rpg/actions/workflows/cmake-windows.yml)
+[![CMake-Server](https://github.com/Mormert/rpg/actions/workflows/cmake-server.yml/badge.svg)](https://github.com/Mormert/rpg/actions/workflows/cmake-server.yml)
