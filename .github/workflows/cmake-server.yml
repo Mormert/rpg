@@ -1,4 +1,4 @@
-name: CMake-Linux
+name: CMake-Server
 
 on:
   push:
@@ -41,6 +41,7 @@ jobs:
           name: ${{env.BUILD_TYPE}}
           path: |
             build/**/*.exe
+            build/**/rpg*
             build/**/EditorResources
             build/**/EngineResources
             build/**/GameResources
