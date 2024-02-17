@@ -56,3 +56,18 @@ jobs:
           passphrase: ${{ secrets.DROPLET_PASSPHRASE }}
           source: "build"
           target: "/rpgServer"
+
+      - name: SSH into Droplet and setup server auto-start service, and start it
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          passphrase: ${{ secrets.DROPLET_PASSPHRASE }}
+          script: |
+            cp -f /rpgServer/build/rpg/GameResources/server/rpg-server.service /etc/systemd/system/
+            systemctl daemon-reload
+            systemctl enable rpg-server
+            systemctl stop rpg-server
+            systemctl start rpg-server
+            systemctl status rpg-server

@@ -1,0 +1,11 @@
+[Unit]
+Description=Rpg Server
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/rpgServer/build/rpg/rpg
+WorkingDirectory=/rpgServer/build/rpg
+
+[Install]
+WantedBy=multi-user.target
