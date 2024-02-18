@@ -17,6 +17,9 @@
 #include "jleSceneClient.h"
 #include "jleSceneServer.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
 #include <LinearMath/btVector3.h>
 
@@ -26,11 +29,11 @@ struct rpgPlayerMovementEventServerToClient : public jleServerToClientEvent {
     void
     serialize(Archive &archive)
     {
-        archive(CEREAL_NVP(objectNetId), CEREAL_NVP(currentPosition), CEREAL_NVP(moveToPosition));
+        archive(CEREAL_NVP(objectNetId), CEREAL_NVP(moveFromPosition), CEREAL_NVP(moveToPosition));
     }
 
     int32_t objectNetId{};
-    glm::vec3 currentPosition{};
+    glm::vec3 moveFromPosition{};
     glm::vec3 moveToPosition{};
 
     void
@@ -38,8 +41,9 @@ struct rpgPlayerMovementEventServerToClient : public jleServerToClientEvent {
     {
         if (auto object = getSceneClient().getObjectFromNetId(objectNetId)) {
             auto player = object->getComponent<cRpgPlayer>();
+            player->_moveFromPosition = moveFromPosition;
             player->_moveToPosition = moveToPosition;
-            player->getTransform().setWorldPosition(currentPosition);
+            player->_interpolationAlpha = 0.f;
         }
     }
 };
@@ -61,11 +65,14 @@ struct rpgPlayerMovementEventClientToServer : public jleClientToServerEvent {
     {
         if (auto object = getSceneServer().getObjectFromNetId(objectNetId)) {
             auto player = object->getComponent<cRpgPlayer>();
+            const auto moveFrom = player->getCurrentPosition();
+            player->_moveFromPosition = moveFrom;
             player->_moveToPosition = moveToPosition;
+            player->_interpolationAlpha = 0.f;
 
             auto event = jleMakeNetEvent<rpgPlayerMovementEventServerToClient>();
             event->moveToPosition = moveToPosition;
-            event->currentPosition = object->getTransform().getWorldPosition();
+            event->moveFromPosition = moveFrom;
             event->objectNetId = object->netID();
             getSceneServer().sendNetworkEventBroadcast(std::move(event));
         }
@@ -105,9 +112,9 @@ cRpgPlayer::update(float dt)
 
     moveTowardsPosition(dt);
 
-    auto positionRotateTowards = _moveToPosition;
+    /*auto positionRotateTowards = _moveToPosition;
     positionRotateTowards.y = getTransform().getLocalPosition().y;
-    getTransform().rotateTowardsPoint(positionRotateTowards);
+    getTransform().rotateTowardsPoint(positionRotateTowards);*/
 
     gEngine->renderGraph().sendLine(_moveToPosition + glm::vec3{0.f, 0.5f, 0.f},
                                     _moveToPosition - glm::vec3{0.f, 0.5f, 0.f});
@@ -133,25 +140,26 @@ cRpgPlayer::playerMoveTo(const glm::vec3 &position)
     sceneClient()->sendNetworkEvent(std::move(event));
 }
 
+glm::vec3
+cRpgPlayer::getCurrentPosition()
+{
+    return glm::mix(_moveFromPosition, _moveToPosition, _interpolationAlpha);
+}
+
 void
 cRpgPlayer::moveTowardsPosition(float dt)
 {
-    auto currentPos = getTransform().getWorldPosition();
-    currentPos.y = 0.f;
+    const auto interpLength = glm::length(_moveFromPosition - _moveToPosition);
 
-    auto moveTo = _moveToPosition;
-    moveTo.y = 0.f;
+    _interpolationAlpha += 1.f/interpLength * dt * 10.f;
+    _interpolationAlpha = glm::clamp(_interpolationAlpha, 0.f, 1.f);
 
-    glm::vec3 diff = moveTo - currentPos;
+    const auto interpPos = getCurrentPosition();
 
-    if (glm::length(diff) > 0.1f) {
-        getTransform().setWorldPosition(currentPos + glm::normalize(diff) * dt * 5.f);
-    }
+    getTransform().setWorldPosition(interpPos);
 
-    currentPos = getTransform().getWorldPosition();
-
-    btVector3 rayFrom = {currentPos.x, currentPos.y + 10.f, currentPos.z};
-    btVector3 rayTo = {currentPos.x, currentPos.y - 10.f, currentPos.z};
+    btVector3 rayFrom = {interpPos.x, interpPos.y + 10.f, interpPos.z};
+    btVector3 rayTo = {interpPos.x, interpPos.y - 10.f, interpPos.z};
 
     btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
 

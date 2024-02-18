@@ -32,12 +32,16 @@ public:
 
     void playerMoveTo(const glm::vec3& position);
 
+    glm::vec3 getCurrentPosition();
+
 protected:
     friend struct rpgPlayerMovementEventServerToClient;
     friend struct rpgPlayerMovementEventClientToServer;
 
     void moveTowardsPosition(float dt);
     glm::vec3 _moveToPosition{};
+    glm::vec3 _moveFromPosition{};
+    float _interpolationAlpha;
 
     glm::vec3 _color{1.f};
     int _someInt{3};
