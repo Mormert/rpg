@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "jleComponent.h"
-#include "jleMaterial.h"
-#include "jleMesh.h"
+#include <jleComponent.h>
+#include <jleMaterial.h>
+#include <jleMesh.h>
 
 class cTerrain : public jleComponent
 {

@@ -29,12 +29,14 @@ project(${JLE_GAME_BUILD})
 
 add_executable(${JLE_GAME_BUILD}
         "main.cpp"
+        "cEmptyComponentTemplateClass.cpp"
         "rpgGame.cpp"
         "cTerrain.cpp"
         "rpgMaterialFlatNoise.cpp"
         "rpgMaterialFlatNoiseTexture.cpp"
         "cRpgPlayer.cpp"
         "cRpgPlayerCamera.cpp"
-        "rpgSceneServer.cpp")
+        "rpgSceneServer.cpp"
+        "cPathFollower.cpp")
 
 include(${JLE_ENGINE_PATH}/cmake/game2.cmake)

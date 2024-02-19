@@ -4,49 +4,18 @@
 
 #include "cRpgPlayer.h"
 
+#include "cPathFollower.h"
 #include "cRpgPlayerCamera.h"
-#include "editor/jleImGuiCerealArchive.h"
 
-#include "cCamera.h"
-#include "jle3DGraph.h"
-#include "jleGameEngine.h"
-#include "jleInput.h"
-#include "jleKeyboardInput.h"
-#include "jleNetworkEvent.h"
-#include "jlePhysics.h"
-#include "jleSceneClient.h"
-#include "jleSceneServer.h"
+#include <cCamera.h>
+#include <editor/jleImGuiCerealArchive.h>
+#include <jle3DGraph.h>
+#include <jleNetworkEvent.h>
+#include <jleSceneClient.h>
+#include <jleSceneServer.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-#include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
-#include <LinearMath/btVector3.h>
-
-struct rpgPlayerMovementEventServerToClient : public jleServerToClientEvent {
-
-    template <class Archive>
-    void
-    serialize(Archive &archive)
-    {
-        archive(CEREAL_NVP(objectNetId), CEREAL_NVP(moveFromPosition), CEREAL_NVP(moveToPosition));
-    }
-
-    int32_t objectNetId{};
-    glm::vec3 moveFromPosition{};
-    glm::vec3 moveToPosition{};
-
-    void
-    execute() override
-    {
-        if (auto object = getSceneClient().getObjectFromNetId(objectNetId)) {
-            auto player = object->getComponent<cRpgPlayer>();
-            player->_moveFromPosition = moveFromPosition;
-            player->_moveToPosition = moveToPosition;
-            player->_interpolationAlpha = 0.f;
-        }
-    }
-};
 
 struct rpgPlayerMovementEventClientToServer : public jleClientToServerEvent {
 
@@ -64,23 +33,23 @@ struct rpgPlayerMovementEventClientToServer : public jleClientToServerEvent {
     execute() override
     {
         if (auto object = getSceneServer().getObjectFromNetId(objectNetId)) {
-            auto player = object->getComponent<cRpgPlayer>();
-            const auto moveFrom = player->getCurrentPosition();
-            player->_moveFromPosition = moveFrom;
-            player->_moveToPosition = moveToPosition;
-            player->_interpolationAlpha = 0.f;
+            if (auto pathFollower = object->getComponent<cPathFollower>()) {
+                const auto moveFrom = pathFollower->getCurrentPosition();
+                pathFollower->_moveFromPosition = moveFrom;
+                pathFollower->_moveToPosition = moveToPosition;
+                pathFollower->_interpolationAlpha = 0.f;
 
-            auto event = jleMakeNetEvent<rpgPlayerMovementEventServerToClient>();
-            event->moveToPosition = moveToPosition;
-            event->moveFromPosition = moveFrom;
-            event->objectNetId = object->netID();
-            getSceneServer().sendNetworkEventBroadcast(std::move(event));
+                auto event = jleMakeNetEvent<rpgPathFollowEventServerToClient>();
+                event->moveToPosition = moveToPosition;
+                event->moveFromPosition = moveFrom;
+                event->objectNetId = object->netID();
+                getSceneServer().sendNetworkEventBroadcast(std::move(event));
+            }
         }
     }
 };
 
 JLE_REGISTER_NET_EVENT(rpgPlayerMovementEventClientToServer)
-JLE_REGISTER_NET_EVENT(rpgPlayerMovementEventServerToClient)
 
 void
 cRpgPlayer::start()
@@ -94,10 +63,15 @@ cRpgPlayer::start()
         }
     }
 
-    JLE_EXEC_IF_NOT(JLE_BUILD_HEADLESS)
-    {
-        _graphicsChild = object()->spawnChildObjectFromTemplate(jlePath{"GR:/otemps/player_gfx.jobj"});
-    }
+    _graphicsChild = object()->spawnChildObjectFromTemplate(jlePath{"GR:/otemps/player_gfx.jobj"});
+
+    object()->addComponent<cPathFollower>();
+}
+
+void
+cRpgPlayer::serverStart()
+{
+    object()->addComponent<cPathFollower>();
 }
 
 void
@@ -111,39 +85,29 @@ cRpgPlayer::startLocalPlayer()
 void
 cRpgPlayer::update(float dt)
 {
-    if (_localPlayer) {
-        playerInput();
-    }
+    if (auto child = _graphicsChild.lock()) {
+        if (const auto pathFollower = object()->getComponent<cPathFollower>()) {
+            const auto moveTo = pathFollower->getMoveToPosition();
+            const auto currentPos = pathFollower->getCurrentPosition();
+            const auto diff = moveTo - currentPos;
+            if (glm::length(diff) > 0.f) {
+                glm::vec3 direction = glm::normalize(diff);
 
-    moveTowardsPosition(dt);
+                float angle = atan2(direction.x, direction.z) + glm::pi<float>();
+                LOGI << angle;
 
-    if(auto child = _graphicsChild.lock()) {
-        const auto diff = _moveToPosition - getCurrentPosition();
-        if(glm::length(diff) > 0.f) {
-            glm::vec3 direction = glm::normalize(_moveToPosition - getCurrentPosition());
+                glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
+                rotationMatrix = glm::rotate(rotationMatrix, glm::radians(90.f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-            float angle = atan2(direction.x, direction.z) + glm::pi<float>();
-
-            glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
-            rotationMatrix = glm::rotate(rotationMatrix, glm::radians(90.f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-            child->getTransform().setLocalMatrix(rotationMatrix);
+                child->getTransform().setLocalMatrix(rotationMatrix);
+            }
         }
     }
-
-    gEngine->renderGraph().sendLine(_moveToPosition + glm::vec3{0.f, 0.5f, 0.f},
-                                    _moveToPosition - glm::vec3{0.f, 0.5f, 0.f});
-}
-
-void
-cRpgPlayer::playerInput()
-{
 }
 
 void
 cRpgPlayer::serverUpdate(float dt)
 {
-    moveTowardsPosition(dt);
 }
 
 void
@@ -153,37 +117,4 @@ cRpgPlayer::playerMoveTo(const glm::vec3 &position)
     event->moveToPosition = position;
     event->objectNetId = object()->netID();
     sceneClient()->sendNetworkEvent(std::move(event));
-}
-
-glm::vec3
-cRpgPlayer::getCurrentPosition()
-{
-    return glm::mix(_moveFromPosition, _moveToPosition, _interpolationAlpha);
-}
-
-void
-cRpgPlayer::moveTowardsPosition(float dt)
-{
-    const auto interpLength = glm::length(_moveFromPosition - _moveToPosition);
-
-    _interpolationAlpha += 1.f / interpLength * dt * 10.f;
-    _interpolationAlpha = glm::clamp(_interpolationAlpha, 0.f, 1.f);
-
-    const auto interpPos = getCurrentPosition();
-
-    getTransform().setWorldPosition(interpPos);
-
-    btVector3 rayFrom = {interpPos.x, interpPos.y + 10.f, interpPos.z};
-    btVector3 rayTo = {interpPos.x, interpPos.y - 10.f, interpPos.z};
-
-    btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
-
-    gEngine->physics().dynamicsWorld().rayTest(rayFrom, rayTo, rayCallback);
-
-    if (rayCallback.hasHit()) {
-        glm::vec3 hitPos{
-            rayCallback.m_hitPointWorld.x(), rayCallback.m_hitPointWorld.y(), rayCallback.m_hitPointWorld.z()};
-        hitPos.y -= 1.5f;
-        getTransform().setWorldPosition(hitPos);
-    }
 }

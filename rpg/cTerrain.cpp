@@ -2,13 +2,13 @@
  *               Copyright (c) 2023-2024 Johan Lind. All rights reserved.                    *
  *********************************************************************************************/
 
-#include "cTerrain.h"
-#include "cMesh.h"
-#include "cRigidbody.h"
-
-#include "editor/jleEditorGizmos.h"
-#include "jle3DRenderer.h"
 #include "rpgGame.h"
+#include "cTerrain.h"
+
+#include <cMesh.h>
+#include <cRigidbody.h>
+#include <editor/jleEditorGizmos.h>
+#include <jle3DRenderer.h>
 
 #include <glm/gtc/noise.hpp>
 

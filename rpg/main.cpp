@@ -2,9 +2,10 @@
  *               Copyright (c) 2023-2024 Johan Lind. All rights reserved.                    *
  *********************************************************************************************/
 
-#include "jleKickStarter.h"
 #include "rpgBuildConfig.h"
 #include "rpgGame.h"
+
+#include <jleKickStarter.h>
 
 class rpgKickStarter : public jleKickStarter
 {

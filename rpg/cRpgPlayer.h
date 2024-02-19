@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "jleComponent.h"
+#include <jleComponent.h>
 
 class cRpgPlayer : public jleComponent
 {
@@ -22,26 +22,19 @@ public:
 
     void start() override;
 
+    void serverStart() override;
+
     void startLocalPlayer();
 
     void update(float dt) override;
-
-    void playerInput();
 
     void serverUpdate(float dt) override;
 
     void playerMoveTo(const glm::vec3& position);
 
-    glm::vec3 getCurrentPosition();
-
 protected:
     friend struct rpgPlayerMovementEventServerToClient;
     friend struct rpgPlayerMovementEventClientToServer;
-
-    void moveTowardsPosition(float dt);
-    glm::vec3 _moveToPosition{};
-    glm::vec3 _moveFromPosition{};
-    float _interpolationAlpha;
 
     std::weak_ptr<jleObject> _graphicsChild;
 

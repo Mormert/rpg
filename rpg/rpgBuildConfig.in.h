@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "jleBuildConfig.h"
+#include <jleBuildConfig.h>
 
 #cmakedefine01 RPG_BUILD_SERVER
 #cmakedefine01 RPG_BUILD_IN_PROC_SERVER

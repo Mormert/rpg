@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "jleMaterial.h"
-#include "jleRGB.h"
+#include <jleMaterial.h>
+#include <jleRGB.h>
 
 #include <cereal/types/vector.hpp>
 

@@ -2,25 +2,24 @@
  *               Copyright (c) 2023-2024 Johan Lind. All rights reserved.                    *
  *********************************************************************************************/
 
-#pragma once
+#include "cEmptyComponentTemplateClass.h"
 
-#include "rpgBuildConfig.h"
-
-#include <jleGame.h>
-
-class rpgGame;
-
-inline rpgGame *gRpgGame;
-
-class rpgGame final : public jleGame
+void
+cEmptyComponentTemplateClass::start()
 {
-public:
-    rpgGame();
+}
+void
+cEmptyComponentTemplateClass::serverStart()
+{
+    start();
+}
 
-    ~rpgGame() override;
-
-    void start() override;
-
-    void update(float dt) override;
-private:
-};
+void
+cEmptyComponentTemplateClass::update(float dt)
+{
+}
+void
+cEmptyComponentTemplateClass::serverUpdate(float dt)
+{
+    update(dt);
+}
