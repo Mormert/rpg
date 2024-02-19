@@ -93,6 +93,11 @@ cRpgPlayer::start()
             startLocalPlayer();
         }
     }
+
+    JLE_EXEC_IF_NOT(JLE_BUILD_HEADLESS)
+    {
+        _graphicsChild = object()->spawnChildObjectFromTemplate(jlePath{"GR:/otemps/player_gfx.jobj"});
+    }
 }
 
 void
@@ -112,9 +117,19 @@ cRpgPlayer::update(float dt)
 
     moveTowardsPosition(dt);
 
-    /*auto positionRotateTowards = _moveToPosition;
-    positionRotateTowards.y = getTransform().getLocalPosition().y;
-    getTransform().rotateTowardsPoint(positionRotateTowards);*/
+    if(auto child = _graphicsChild.lock()) {
+        const auto diff = _moveToPosition - getCurrentPosition();
+        if(glm::length(diff) > 0.f) {
+            glm::vec3 direction = glm::normalize(_moveToPosition - getCurrentPosition());
+
+            float angle = atan2(direction.x, direction.z) + glm::pi<float>();
+
+            glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
+            rotationMatrix = glm::rotate(rotationMatrix, glm::radians(90.f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+            child->getTransform().setLocalMatrix(rotationMatrix);
+        }
+    }
 
     gEngine->renderGraph().sendLine(_moveToPosition + glm::vec3{0.f, 0.5f, 0.f},
                                     _moveToPosition - glm::vec3{0.f, 0.5f, 0.f});
@@ -151,7 +166,7 @@ cRpgPlayer::moveTowardsPosition(float dt)
 {
     const auto interpLength = glm::length(_moveFromPosition - _moveToPosition);
 
-    _interpolationAlpha += 1.f/interpLength * dt * 10.f;
+    _interpolationAlpha += 1.f / interpLength * dt * 10.f;
     _interpolationAlpha = glm::clamp(_interpolationAlpha, 0.f, 1.f);
 
     const auto interpPos = getCurrentPosition();

@@ -43,6 +43,8 @@ protected:
     glm::vec3 _moveFromPosition{};
     float _interpolationAlpha;
 
+    std::weak_ptr<jleObject> _graphicsChild;
+
     glm::vec3 _color{1.f};
     int _someInt{3};
 

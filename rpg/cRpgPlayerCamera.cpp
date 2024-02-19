@@ -40,14 +40,14 @@ void
 cRpgPlayerCamera::processInput(float dt)
 {
     if (gEngine->input().mouse->mouseClick(jleButton::BUTTON_2)) {
-        _yaw += gEngine->input().mouse->xDelta() * dt * 55.f;
+        _yaw += gEngine->input().mouse->xDelta() * 0.3f;
 
         _yaw = glm::mod(_yaw, 360.0f);
         if (_yaw >= 180.0f) {
             _yaw -= 360.0f;
         }
 
-        _pitch -= gEngine->input().mouse->yDelta() * dt * 55.f;
+        _pitch -= gEngine->input().mouse->yDelta() * 0.3f;
         _pitch = glm::clamp(_pitch, -89.0f, -8.0f);
     } else if (gEngine->input().mouse->mouseClick(jleButton::BUTTON_3)) {
 
@@ -59,8 +59,8 @@ cRpgPlayerCamera::processInput(float dt)
         constexpr glm::vec3 up = {0.f, 1.f, 0.f};
         const auto right_xz = glm::cross(up, forward_xz);
 
-        _targetOffset += forward_xz * gEngine->input().mouse->yDelta() * dt * 55.f;
-        _targetOffset += right_xz * gEngine->input().mouse->xDelta() * dt * 55.f;
+        _targetOffset += forward_xz * gEngine->input().mouse->yDelta() * 0.3f;
+        _targetOffset += right_xz * gEngine->input().mouse->xDelta() * 0.3f;
     }
 
     if (gEngine->input().keyboard->keyDown(jleKey::SPACE)) {

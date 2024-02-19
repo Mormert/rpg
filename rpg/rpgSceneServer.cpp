@@ -14,8 +14,6 @@ rpgSceneServer::onClientConnect(int32_t clientId)
     const auto player = spawnObjectWithOwner("player_" + std::to_string(clientId), clientId);
     player->addComponent<cRpgPlayer>();
     player->getTransform().setLocalPosition({50.f, 0.f, 50.f});
-
-    player->spawnChildObjectFromTemplate(jlePath{"GR:/otemps/player_gfx.jobj"});
 }
 
 template <class Archive>
