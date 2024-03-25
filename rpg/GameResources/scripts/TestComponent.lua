@@ -16,7 +16,7 @@ ClassTwo = {}
 function ClassTwo.new(o)
 end
 
----@class TestComponent : ClassOne
+---@class TestComponent : LuaComponent
 ---@inherits ClassOne
 ---@serialized array<integer> anIntegerArray
 ---@serialized ClassTwo aClassTwo
@@ -32,12 +32,25 @@ end
 
 function TestComponent:updateTimer(dt)
     self.timer = self.timer + dt
-    print(self.timer)
+    --print(self.timer)
+end
+
+function TestComponent:updateTransform(dt)
+
+    local object = self.getObject()
+    local transform = object:transform();
+    local localPos = transform:getLocalPosition()
+
+    local vec = vec3.new(localPos.x, math.sin(self.timer), localPos.z)
+
+
+    transform:setLocalPosition(vec)
 end
 
 -- Method to update the component
 function TestComponent:update(dt)
     self:updateTimer(dt)
+    self:updateTransform(dt)
 end
 
 
