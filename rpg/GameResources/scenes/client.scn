@@ -38,9 +38,9 @@
                                                 "w": 0.0
                                             },
                                             "value3": {
-                                                "x": 0.0,
-                                                "y": -30.24440574645996,
-                                                "z": 0.0,
+                                                "x": 17.31103515625,
+                                                "y": -36.40333938598633,
+                                                "z": -26.86181640625,
                                                 "w": 1.0
                                             }
                                         }
@@ -127,6 +127,125 @@
                                                 "id": 2147483655,
                                                 "data": {
                                                     "_mass": 0.0
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483656,
+                                "data": {
+                                    "__templatePath": {
+                                        "nullopt": true
+                                    },
+                                    "_instanceName": "luaExample",
+                                    "_transform": {
+                                        "_local": {
+                                            "value0": {
+                                                "x": 1.0,
+                                                "y": 0.0,
+                                                "z": 0.0,
+                                                "w": 0.0
+                                            },
+                                            "value1": {
+                                                "x": 0.0,
+                                                "y": 1.0,
+                                                "z": 0.0,
+                                                "w": 0.0
+                                            },
+                                            "value2": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 1.0,
+                                                "w": 0.0
+                                            },
+                                            "value3": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0,
+                                                "w": 1.0
+                                            }
+                                        }
+                                    },
+                                    "__childObjects": [],
+                                    "_components": [
+                                        {
+                                            "polymorphic_id": 2147483652,
+                                            "polymorphic_name": "cLuaScript",
+                                            "ptr_wrapper": {
+                                                "id": 2147483657,
+                                                "data": {
+                                                    "_luaClass": "TestComponent",
+                                                    "aNumber": 0.085,
+                                                    "anotherNumber": -0.045,
+                                                    "aNumberArray": [],
+                                                    "anIntegerArray": [],
+                                                    "aClassTwo": {
+                                                        "classTwoNumber": 0.0
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "polymorphic_id": 1073741824,
+                            "ptr_wrapper": {
+                                "id": 2147483658,
+                                "data": {
+                                    "__templatePath": {
+                                        "nullopt": true
+                                    },
+                                    "_instanceName": "luaExample2",
+                                    "_transform": {
+                                        "_local": {
+                                            "value0": {
+                                                "x": 1.0,
+                                                "y": 0.0,
+                                                "z": 0.0,
+                                                "w": 0.0
+                                            },
+                                            "value1": {
+                                                "x": 0.0,
+                                                "y": 1.0,
+                                                "z": 0.0,
+                                                "w": 0.0
+                                            },
+                                            "value2": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 1.0,
+                                                "w": 0.0
+                                            },
+                                            "value3": {
+                                                "x": 0.0,
+                                                "y": 0.0,
+                                                "z": 0.0,
+                                                "w": 1.0
+                                            }
+                                        }
+                                    },
+                                    "__childObjects": [],
+                                    "_components": [
+                                        {
+                                            "polymorphic_id": 4,
+                                            "ptr_wrapper": {
+                                                "id": 2147483659,
+                                                "data": {
+                                                    "_luaClass": "TestComponent",
+                                                    "aNumber": 0.58,
+                                                    "anotherNumber": -0.045,
+                                                    "aNumberArray": [],
+                                                    "anIntegerArray": [],
+                                                    "aClassTwo": {
+                                                        "classTwoNumber": 0.0
+                                                    }
                                                 }
                                             }
                                         }

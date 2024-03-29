@@ -1,0 +1,17 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "LuaHelper-Debug",
+            "request": "launch",
+            "name": "LuaHelper-Attach",
+            "description": "",
+            "cwd": "${workspaceFolder}",
+            "luaFileExtension": "",
+            "connectionPort": 8818,
+            "stopOnEntry": true,
+            "useCHook": true,
+            "autoPathMode": true
+        }
+    ]
+}

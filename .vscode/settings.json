@@ -1,0 +1,14 @@
+{
+    "cmake.configureOnOpen": false,
+    "Lua.workspace.library": [
+        "jle/engine/EngineResources/scripts/definitions"
+    ],
+    "Lua.workspace.ignoreDir": [
+        "rpg/cmake-*"
+    ],
+    "Lua.workspace.checkThirdParty": false,
+    "files.exclude": {
+        "**/cmake-*": true,
+        "**/.idea": true
+    }
+}

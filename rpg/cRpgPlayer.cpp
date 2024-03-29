@@ -94,7 +94,6 @@ cRpgPlayer::update(float dt)
                 glm::vec3 direction = glm::normalize(diff);
 
                 float angle = atan2(direction.x, direction.z) + glm::pi<float>();
-                LOGI << angle;
 
                 glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(0.0f, 1.0f, 0.0f));
                 rotationMatrix = glm::rotate(rotationMatrix, glm::radians(90.f), glm::vec3(1.0f, 0.0f, 0.0f));
