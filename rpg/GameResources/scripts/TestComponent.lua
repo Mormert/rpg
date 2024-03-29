@@ -31,20 +31,13 @@ function TestComponent:new(o)
 end
 
 function TestComponent:updateTimer(dt)
-    self.timer = self.timer + dt
-    --print(self.timer)
+    self.timer = self.timer + 1
 end
 
 function TestComponent:updateTransform(dt)
-
-    local object = self.getObject()
-    local transform = object:transform();
-    local localPos = transform:getLocalPosition()
-
+    local localPos = self.transform:getLocalPosition()
     local vec = vec3.new(localPos.x, math.sin(self.timer), localPos.z)
-
-
-    transform:setLocalPosition(vec)
+    self.transform:setLocalPosition(vec)
 end
 
 -- Method to update the component
@@ -55,7 +48,7 @@ end
 
 
 function TestComponent:start()
-
+    self.object:addComponent("cLight");
 end
 
 function TestComponent:destroy()
