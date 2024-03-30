@@ -36,7 +36,7 @@ cTerrain::editorGizmosRender(bool selected)
 }
 
 void
-cTerrain::registerLua(sol::state &lua, sol::table &table)
+cTerrain::registerLua(sol::state &lua)
 {
 }
 

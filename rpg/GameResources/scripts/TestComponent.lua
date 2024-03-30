@@ -48,7 +48,9 @@ end
 
 
 function TestComponent:start()
-    self.object:addComponent("cLight");
+    local light = self.object:addComponent_cLight();
+    local color = light.color;
+    color.x = 1.25;
 end
 
 function TestComponent:destroy()

@@ -31,7 +31,7 @@ public:
 
     void editorGizmosRender(bool selected) override;
 
-    void registerLua(sol::state &lua, sol::table &table) override;
+    void registerLua(sol::state &lua) override;
 
     void editorInspectorImGuiRender() override;
 
