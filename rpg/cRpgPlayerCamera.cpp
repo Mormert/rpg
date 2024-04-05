@@ -145,7 +145,7 @@ cRpgPlayerCamera::processTerrainRaycast()
 
         btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
 
-        gEngine->physics().dynamicsWorld().rayTest(rayFrom, rayTo, rayCallback);
+        scene()->getPhysics().dynamicsWorld().rayTest(rayFrom, rayTo, rayCallback);
 
         gEngine->renderGraph().sendLine(cameraPosition, rayEnd);
 

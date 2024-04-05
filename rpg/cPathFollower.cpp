@@ -59,7 +59,7 @@ cPathFollower::moveTowardsPosition(float dt)
 
     btCollisionWorld::ClosestRayResultCallback rayCallback(rayFrom, rayTo);
 
-    gEngine->physics().dynamicsWorld().rayTest(rayFrom, rayTo, rayCallback);
+    scene()->getPhysics().dynamicsWorld().rayTest(rayFrom, rayTo, rayCallback);
 
     if (rayCallback.hasHit()) {
         glm::vec3 hitPos{
